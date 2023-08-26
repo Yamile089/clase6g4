@@ -1,3 +1,6 @@
+import datetime
+
+
 class Medicamento:
     def __init__(self):
         self.__nombre = "" 
@@ -12,6 +15,9 @@ class Medicamento:
         self.__nombre = med 
     def asignarDosis(self,med):
         self.__dosis = med 
+
+
+
         
 class Mascota:
     
@@ -48,7 +54,13 @@ class Mascota:
         self.__fecha_ingreso=f
     def asignarLista_Medicamentos(self,n):
         self.__lista_medicamentos = n 
-    
+    def agregarMedicamento(self,medicamento):
+        for med in self.__lista_medicamentos:
+            if med.verNombre()==medicamento.verNombre():
+                print("No puede ingresar este medicamento, ya existe un medicamento con este nombre")
+                return False 
+            self.__lista_medicamentos.append(medicamento)
+            return True 
 class sistemaV:
     def __init__(self):
         self.__lista_mascotas = []
@@ -87,7 +99,8 @@ class sistemaV:
                 self.__lista_mascotas.remove(masc)  #opcion con el pop
                 return True  #eliminado con exito
         return False 
-
+    
+    
 def main():
     servicio_hospitalario = sistemaV()
     # sistma=sistemaV()
