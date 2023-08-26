@@ -1,4 +1,5 @@
-import datetime
+import re
+#El modulo re se usa para utilizar con expresiones regulares
 
 
 class Medicamento:
@@ -61,9 +62,22 @@ class Mascota:
                 return False 
             self.__lista_medicamentos.append(medicamento)
             return True 
-class sistemaV:
+    def asignarFecha(self,f):
+        if re.match(r'^\d{2}/\d{2}/\d{4}$', f):
+            self.__fecha_ingreso =f
+        else:
+            print("Formato de fecha incorrecto, el formato es dd/mm/aaaa")
+    def eliminarMedicamento(self,nombre_medicamento):
+        for medicamento in self.__lista_medicamentos:
+            if medicamento.verNombre()==nombre_medicamento:
+                self.__lista_medicamentos.remove(medicamento)
+                print("Medicamento eliminado correctamente")
+                return True
+            print("No se encontró el medicamento, prueba de nuevo")
+            return False 
     def __init__(self):
-        self.__lista_mascotas = []
+        self.__lista_mascotas_caninos = []
+        self.__lista_mascotas_felinos= []
     
     def verificarExiste(self,historia):
         for m in self.__lista_mascotas:
@@ -77,6 +91,12 @@ class sistemaV:
     
     def ingresarMascota(self,mascota):
         self.__lista_mascotas.append(mascota) 
+        if mascota.verTipo().lower() == "canino":
+            self.__lista_mascotas_caninos.append(mascota)
+        elif mascota.verTipo().lower() == "felino":
+            self.__lista_mascotas_felinos.append(mascota)
+        else:
+            print("Tipo de mascota no válido.")
    
 
     def verFechaIngreso(self,historia):
@@ -106,12 +126,13 @@ def main():
     # sistma=sistemaV()
     while True:
         menu=int(input('''\nIngrese una opción: 
-                       \n1- Ingresar una mascota 
+                       \n1- Ingresar una mascota (canino o felino)
                        \n2- Ver fecha de ingreso 
                        \n3- Ver número de mascotas en el servicio 
                        \n4- Ver medicamentos que se están administrando
                        \n5- Eliminar mascota 
-                       \n6- Salir 
+                       \n6-Eliminar medicamento de una mascota 
+                       \n7- Salir 
                        \nUsted ingresó la opción: ''' ))
         if menu==1: # Ingresar una mascota 
             if servicio_hospitalario.verNumeroMascotas() >= 10:
@@ -124,6 +145,10 @@ def main():
                 tipo=input("Ingrese el tipo de mascota (felino o canino): ")
                 peso=int(input("Ingrese el peso de la mascota: "))
                 fecha=input("Ingrese la fecha de ingreso (dia/mes/año): ")
+                if re.match(r'^\d{2}/\d{2}/\d{4}$', fecha):
+                    mas.asignarFecha(fecha)
+                else:
+                    print("Formato de fecha incorrecto")
                 nm=int(input("Ingrese cantidad de medicamentos: "))
                 lista_med=[]
 
@@ -180,6 +205,16 @@ def main():
                 print("No se ha podido eliminar la mascota")
         
         elif menu==6:
+            historia=int(input("Ingrese la historia clinica de la mascota"))
+            medicamento=input("Ingrese el nombre del medicamento que desea eliminar")
+
+            for mascota in servicio_hospitalario.verListaMascotas():
+                if historia==mascota.verHistoria():
+                    if mascota.eliminarMedicamento(medicamento):
+                        break
+            else:
+                print("No se encontró la mascota, verifique la historia clínica")
+        elif menu==7:
             print("Usted ha salido del sistema de servicio de hospitalización...")
             break
         
